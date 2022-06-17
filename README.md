@@ -29,24 +29,18 @@
     %jsxgraph
     ```
   
-  - The cell magic should be used as:
-  
-    ```
-    %%jsxgraph height1 ... heightn
-    <JSXGraph descriptions>
-    ```
+  - The cell magic may be used as follows:
 
-    It will create `n ` `div`s in the output cell, with `id` being `board0`, `board1`, ..., `board${n-1}`, and height being  `height1 ... heightn` in the unit of `px`.  `<JSXGraph descriptions>`  is the JavaScript code to bind the drawboard with corresponding `HTMLElement` as well as to describe the graphs.
+    It will create one div element in the output cell, with id being `id`, and height being  `height` in the unit of `px`.  `JSXGraph descriptions`  is the JavaScript code to bind the drawboard with corresponding `HTMLElement` as well as to describe the graphs.
   
     ```
-    %%jsxgraph 300 300
+    %%jsxgraph -w 500 -h 500 box
     // Initialize board
-    var drawboard0 = JXG.JSXGraph.initBoard('board0');
-    var drawboard1 = JXG.JSXGraph.initBoard('board1');
+    var b = JXG.JSXGraph.initBoard('box');
     // More code
     ```
     
-    As an example, the above code will create two `div`s with height both being `300px`. Their `id`s will be `board0`, `board1` respectively. Then we bind them with the corresponding `drawboard`s.
+    As an example, the above code will create a `div` with height and width `500px`. `box` is the id of the `<div>` block in the cell output that binds to the drawboard.
 
 
 
