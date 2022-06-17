@@ -14,8 +14,8 @@ setup(
     description="Jupyter Notebook/Lab magic wrapper for the JavaScript math-sketching utility JSXGraph",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/chunxy/jsxgraph-magic",
-    author="chunxy",
+    url="https://github.com/ccha23/jsxgraph-magic",
+    author="DIVE",
     license="MIT",
     classifiers=[
         "Framework :: IPython",

@@ -1,47 +1,41 @@
-from IPython.display import display, Javascript, Pretty
-from IPython.core.magic import register_line_cell_magic
+from IPython.core.magic import (Magics, magics_class, line_magic,
+                                cell_magic, line_cell_magic)
+from IPython.core.magic_arguments import (argument, magic_arguments,
+                                          parse_argstring)
+from IPython.display import Javascript, display
 
-@register_line_cell_magic
-def jsxgraph(line: str, cell: str = None):
+@magics_class
+class JSXGraph(Magics):
 
-    info = str('The cell magic should be used as:\n\n'
-               '%%jsxgraph height1 ... heightn\n'
-               '<drawboard binding and JSXGraph description>\n')
-    erro = 'Please pass positive numeric value for heights!\n'
+    @magic_arguments()
+    @argument(
+        '-w', '--width', type=int, default=1100,
+        help="The width of the output frame (default: 1100)."
+    )
+    @argument(
+        'arg', type=str,
+        help="id of a <div> element for embeding the board."
+    )
+    @argument(
+        '-h', '--height', type=int, default=700,
+        help="The height of the output frame (default: 700)."
+    )
+    @cell_magic
+    def jsxgraph(self, line, cell):
+        opts = parse_argstring(self.jsxgraph, line)
+        display(Javascript(f"""
+        var JXG_div = document.createElement("div");
+        JXG_div.id = "{opts.arg}";
+        JXG_div.style = "height:{opts.height}px;width:{opts.width}px";
+        element.append(JXG_div);
+        """))
+        display(Javascript(cell,
+        lib='https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js', 
+        css='https://jsxgraph.org/distrib/jsxgraph.css'))
 
-    if cell is None:
-        return display(Pretty(info))
-    args = line.strip().split()
-    if len(args) == 0:
-        return display(Pretty(info))
-
-    for arg in args:
-        if not arg.isnumeric() or arg[0] == '-':
-            return display(Pretty(erro + info))
-
-    template = str('let div{0} = document.createElement("div");\n'
-                   'div{0}.id = "board{0}"\n'
-                   'div{0}.style = "height:{1}px;"\n'
-                   'element.append(div{0});\n')
-    insert_dom = ''.join(template.format(i, args[i]) for i in range(len(args)))
-
-    # These two scripts will invalidate the RequireJS context
-    # when importing the JSXGraph in Jupyter Notebook
-    # and restore the RequireJS after execution.
-    nullify = str('if (typeof define === "function" && define.amd) {{\n'
-                  'var old_define = define;\n'
-                  'define = null\n'
-                  '}}')
-    restore = str('if (typeof define === "function" && define.amd) {{\n'
-                  'define = old_define\n'
-                  'old_define = null;\n'
-                  '}}')
-
-    lib = 'https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js'
-    css = 'https://jsxgraph.org/distrib/jsxgraph.css'
-
-    # These two steps must be separated, or else
-    # the JSXGraph cannot find the binding HTMLElement.
-    display(Javascript(insert_dom + nullify))
-    display(Javascript(cell + restore, lib=lib, css=css))
-    return None
+def load_ipython_extension(ipython):
+    """
+    Register the magics with a running IPython so the magics can be loaded via
+     `%load_ext jsxgraph` or be configured to be autoloaded by IPython at startup time.
+    """
+    ipython.register_magics(JSXGraph)
