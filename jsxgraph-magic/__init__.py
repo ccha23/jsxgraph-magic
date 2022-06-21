@@ -9,16 +9,16 @@ class JSXGraph(Magics):
 
     @magic_arguments()
     @argument(
-        '-w', '--width', type=int, default=1100,
-        help="The width of the output frame (default: 1100)."
+        '-w', '--width', type=int, default=600,
+        help="The width of the output frame (default: 600)."
     )
     @argument(
         'arg', type=str,
         help="id of a <div> element for embeding the board."
     )
     @argument(
-        '-h', '--height', type=int, default=700,
-        help="The height of the output frame (default: 700)."
+        '-h', '--height', type=int, default=600,
+        help="The height of the output frame (default: 600)."
     )
     @cell_magic
     def jsxgraph(self, line, cell):
